@@ -1,0 +1,174 @@
+﻿@model X.PagedList.IPagedList<HoaDon>
+@using X.PagedList.Mvc.Core;
+@{
+
+}
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a asp-action="Index" asp-controller="Home" class="btn btn-primary">Home</a></li>
+               
+            </ol>
+            <p  style="text-align: center">Đơn hàng của bạn</p>
+        </div>
+        <div class="table-responsive cart_info">
+            <table class="table table-condensed" id="showtable1">
+                <thead>
+                    <tr class="cart_menu">
+                        <td class="Email">Người mua</td>
+                        <td class="Ngày tạo">Ngày</td>
+                        <td class="Địa chỉ">Địa chỉ</td>
+                        <td class="quantity">SĐT</td>                    
+                        <td class="total">Trạng thái</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        @foreach (var items in Model)
+                        {
+                            <tr class="table-row table-row--chris">
+                                <td class="table-row__td">
+                                    <p>@items.TenKh</p>
+                                </td>
+                                <td class="table-row__td">
+                                    <p>@items.Ngay</p>
+                                </td>
+                                <td class="table-row__td">
+                                    <p>@items.DiaChi</p>
+                                </td>
+                                <td class="table-row__td">
+                                    <p>@items.Sdt</p>
+                                </td>
+                                
+                                <td class="table-row__td">
+                                    @if (items.TrangThai == 1)
+                                    {
+
+                                        <span class="badge text-bg-warning " style="background: #ffc107;">Chờ xác nhận</span>
+                                    }
+                                    else if (items.TrangThai == 2)
+                                    {
+
+                                        <span class="badge text-bg-primary" style="background: #007bff;">Đang giao hàng</span>
+                                    }
+                                    else if (items.TrangThai == 3)
+                                    {
+
+                                        <span class="badge text-bg-success" style="background: #28a745;">Đã giao hàng</span>
+                                    }
+                                    else if (items.TrangThai == 4)
+                                    {
+
+                                        <span class="badge text-bg-danger" style="background: red">Đã Hủy bỏ</span>
+                                    }
+                                </td>
+                                <td class="table-row__td">
+                                    <div class="input-form">
+                                        @if (items.TrangThai == 1)
+                                        {
+                                            <a href="@Url.Action("Huy", "History", new { @id = items.MaHd, page = ViewBag.Page, pageId = 1 })" class="btn btn-danger">Hủy</a>
+                                        }
+                                        @if (items.TrangThai == 2)
+                                        {
+                                            <a href="@Url.Action("Huy", "History", new { @id = items.MaHd, page = ViewBag.Page, pageId = 1 })" class="btn btn-danger">Hủy</a>
+                                        }
+
+                                        <a class="btn btn-info" data-toggle="modal" id="viewbtn1" data-target="#showmodal1" data-orderid="@items.MaHd">Chi tiết</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                <ul class="pagination">
+                    @if (Model != null)
+                    {
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { lsp = ViewBag.lsp, page = Model.PageNumber - 1 })"><i class="fa fa-angle-left"></i></a>
+                            </li>
+
+                        }
+
+                        <li class="page-item @(1 == ViewBag.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { lsp = ViewBag.lsp, page = 1 })">1</a>
+                        </li>
+                    
+                        @if (Model.PageNumber > 3)
+                        {
+                            <li class="page-item">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+
+                        @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+                        {
+                            if (i > 1 && i < Model.PageCount)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { lsp = ViewBag.lsp, page = i })">@i</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.PageNumber < Model.PageCount - 2)
+                        {
+                            <li class="page-item">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+
+                        @if (Model.PageCount > 1)
+                        {
+                            <li class="page-item @(Model.PageCount == ViewBag.Page ? "active" : "") ">
+                                <a class="page-link" href="@Url.Action("Index", new { lsp = ViewBag.lsp, page = Model.PageCount })">@Model.PageCount</a>
+                            </li>
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { lsp = ViewBag.lsp, page = Model.PageNumber + 1 })"><i class="fa fa-angle-right"></i></a>
+                            </li>
+                        }
+                    }
+                </ul>
+                <div class="modal fade" id="showmodal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document" style="width: 950px;">
+                        <!-- Content will be loaded here dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section> <!--/#cart_items-->
+
+<script>
+    $(document).ready(function () {
+        $("#showtable1").on("click", "#viewbtn1", function () {
+            var id = $(this).data('orderid');
+            $.ajax({
+                url: "@Url.Action("Details", "CheckOut")",
+                data: { id: id },
+                type: 'GET',
+                success: function (data) {
+                    // Replace the content of the modal with the received data
+                    $("#showmodal1 .modal-dialog").html(data);
+                },
+                error: function (error) {
+                    // Log any errors to the console
+                    console.error("Error fetching details:", error);
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,51 @@
+﻿@using myshop.Models;
+@model List<ChiTietHd>
+
+<table class="table table-bordered">
+    <thead style="text-align: center;color: #fff;background-color: #007BFF;border-color: #007BFF;">
+        <tr>
+            
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    <p>
+                        @if (item.MaSpNavigation != null && item.MaSpNavigation.Anh != null)
+                        {
+                            <img src="@Url.Content("~/Images/" + item.MaSpNavigation.Anh)" width="100" height="100" />
+                        }
+                        else
+                        {
+                            <!-- Nếu item.MaSpNavigation hoặc item.MaSpNavigation.Anh là null, bạn có thể hiển thị một hình ảnh mặc định hoặc thông báo lỗi -->
+                           @*  <img src="@Url.Content("~/Images/default.jpg")" width="100" height="100" /> *@
+                            <!-- Hoặc có thể hiển thị một thông báo lỗi -->
+                            <!-- <p>Không có ảnh cho sản phẩm này.</p> -->
+                        }
+                    </p>
+                    @Html.DisplayFor(m => item.MaSpNavigation.TenSp)</td>
+                <td>
+                    @if(item.MaSpNavigation != null)
+                    {
+                        @String.Format("{0:#,##0.###}", item.Price ) 
+                        
+                    }
+                    
+                </td>
+                <td>
+                    @if (item.MaSpNavigation != null)
+                    {
+                        @Html.DisplayFor(m => item.SoLuong)
+                    }
+                  
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

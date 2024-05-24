@@ -1,0 +1,254 @@
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Media mart</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+
+    <!-- Favicon -->
+    <link href="~/user/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/user/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/user/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid">
+        <div class="row bg-secondary py-2 px-xl-5">
+            <img src="~/Images/top.png" style="margin-left:100px" />
+            <img src="~/Images/top2.png" />
+
+        </div>
+        <div class="row align-items-center py-3 px-xl-5" style="background:deeppink">
+            <div class="col-lg-3 d-none d-lg-block">
+                <a href="" class="text-decoration-none">
+                    <img src="~/Images/logo.png" style="max-width: 200px; max-height: auto;" />
+                </a>
+            </div>
+            <div class="col-lg-6 col-6 text-left">
+                <form asp-action="Search" asp-controller="Home" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Nhập từ cần tìm?" name="searchTen">
+                        <div class="input-group-append">
+                            <button class="input-group-text bg-transparent text-primary" type="submit">
+                                <i class="fa fa-search" style="color:black" ></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-3 col-6 text-right">
+                <a href="" class="btn border">
+                    <i class="fas fa-heart " style="color:white"></i>
+                    <span class="badge">0</span>
+                </a>
+                <a asp-controller="Cart" asp-action="Index" asp-area="" class="btn border">
+                    <i class="fas fa-shopping-cart " style="color:white"></i>
+                    <span class="badge">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+    <!-- Navbar Start -->
+    <div class="container-fluid mb-5">
+        <div class="row border-top px-xl-5">
+            <div class="col-lg-3 d-none d-lg-block" style="margin-top: 70px">
+                
+                <div>
+                    <img src="~/Images/p2.png" style="width:auto" height="200"/>
+                </div>
+                <div>
+                    <img src="~/Images/p3.png" style="width:auto" height="200" />
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+                    <a href="" class="text-decoration-none d-block d-lg-none">
+                        <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <div class="navbar-nav mr-auto py-0">
+                            <a asp-action="Index" asp-controller="Home" asp-area="" class="nav-item nav-link active">Trang chủ</a>
+                            
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Trang</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a asp-action ="Index" asp-controller="Cart" asp-area="" class="dropdown-item">Giỏ hàng</a>
+                                    <a asp-action="Index" asp-controller="CheckOut" asp-area=""  class="dropdown-item">Thanh toán</a>
+                                </div>
+                            </div>
+                            <a asp-action="Index" asp-controller="Contact" class="nav-item nav-link">Hệ thống cửa hàng</a>
+                        </div>
+                        <div class="navbar-nav ml-auto py-0">
+                            <a asp-action="Dangky" asp-controller="CheckOut" class="nav-item nav-link">Đăng ký</a>
+                            @if(Context.Session.GetInt32("MaTk") == null)
+                            {
+                                <a asp-action="Login" asp-controller="Login" class="nav-item nav-link">Đăng nhập</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Logout" asp-controller="Login" class="nav-item nav-link">Đăng xuất</a>
+                            }
+                            <div class="nav-item dropdown">
+                                <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-user">
+                                        @if (Context.Session.GetString("TenKh") != null)
+                                        {
+                                            @Context.Session.GetString("TenKh")
+                                        }
+                                        else
+                                        {
+                                            @ViewData["TenDn"]
+                                        }
+                                    </i>
+                                </a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a asp-action="Lichsu" asp-controller="CheckOut" asp-area="" class="dropdown-item">Lịch sử mua</a>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </nav>
+                <div id="header-carousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" style="height: 410px;">
+                            <img class="img-fluid" src="~/Images/sale-dieu-hoa_23dfd75e.png" alt="Image" >
+
+                        </div>
+                        <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="~/Images/tl-japan-4490000d_6bed7469.png" alt="Image">
+
+                        </div>
+                        <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="~/Images/tivi-doi-cu-lay-moi---giam-them-den-2-trieu_df5d270e.png" alt="Image">
+
+                        </div>
+                        
+                    </div>
+                    <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
+                        <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                            <span class="carousel-control-prev-icon mb-n2"></span>
+                        </div>
+                    </a>
+                    <a class="carousel-control-next" href="#header-carousel" data-slide="next">
+                        <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                            <span class="carousel-control-next-icon mb-n2"></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Navbar End -->
+    <!-- Featured Start -->
+    <!-- Featured End -->
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger intent="WELCOME"
+                  chat-title="MediaMart"
+                  agent-id="14e2dd63-f1b5-4424-b4c1-584e011e7377"
+                  language-code="vi"></df-messenger>
+    @RenderBody();
+    @RenderSection("Scripts", required: false);
+    
+    <!-- Footer Start -->
+    <div class="container-fluid bg-secondary text-dark mt-5 pt-5">
+        <div class="row px-xl-5 pt-5">
+            <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
+                <a href="" class="text-decoration-none">
+                    <img src="~/Images/mm-logo.png" style="max-width: 200px; max-height: auto;" />
+                </a>
+
+                <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>Hệ thống 400 siêu thị (8:00-21:00)</p>
+                <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>Giới thiệu công ty</p>
+                <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>Liên hệ và góp ý</p>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="row">
+                    <div class="col-md-4 mb-5" style="margin-top:40px">
+
+                        <div class="d-flex flex-column justify-content-start">
+
+                            <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Mua hàng trả góp</a>
+                            <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Hướng dẫn mua hàng online</a>
+                            <a class="text-dark mb-2" href="cart.html"><i class="fa fa-angle-right mr-2"></i>Tra cứu đơn hàng</a>
+                            <a class="text-dark mb-2" href="checkout.html"><i class="fa fa-angle-right mr-2"></i>Tra cứu bảo hành</a>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-5">
+                        <h5 class="font-weight-bold" style="color: #ff1493; margin-bottom: 1.5rem;">Hỗ trợ khách hàng</h5>
+
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Bán hàng: 19006788</a>
+                            <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Khiếu nại, Bảo hành:</a>
+                            <a class="text-dark mb-2" style="margin-left: 10px">19006741 / 19006743</a>
+                            <a class="text-dark mb-2" href="cart.html"><i class="fa fa-angle-right mr-2"></i>Chính sách 30 ngày đổi mới</a>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-5">
+                        <h5 class="font-weight-bold" style="color: #ff1493; margin-bottom: 1.5rem;">Theo dõi mediamart trên :</h5>
+                        <img src="https://cdn.mediamart.vn/images/menu/mediamart-facebook-fanpage_7b8f3ccc.png" alt="MediaMart Facebook Fanpage">
+                        <img src="https://cdn.mediamart.vn/images/menu/mediamart-youtube-channel_53501d19.png" alt="MediaMart Youtube Channel">
+                        <img src="https://cdn.mediamart.vn/images/menu/mediamart-tiktok-channel_52e656aa.png" alt="MediaMart Tiktok Channel">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-top border-light mx-xl-5 py-4">
+            <div class="col-md-6 px-xl-0">
+                <p class="mb-md-0 text-center text-md-left text-dark">
+                    © 2007 Công ty Cổ phần MEDIAMART Việt Nam - ĐCĐK: 29F Hai Bà Trưng. GPĐKKD số: 0102516308 do Sở KHĐT Tp.Hà Nội cấp ngày 15/11/2007. Email: hotro@mediamart.com.vn. Điện thoại: 1900 6741. Fax: 0243 933 0766 Website: mediamart.vn / thegioidienmay.com
+                </p>
+            </div>
+            <div class="col-md-6 px-xl-0 text-center text-md-right">
+                <img class="img-fluid" src="img/payments.png" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="~/user/lib/easing/easing.min.js"></script>
+    <script src="~/user/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="~/user/mail/jqBootstrapValidation.min.js"></script>
+    <script src="~/user/mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="~/user/js/main.js"></script>
+</body>
+
+</html>

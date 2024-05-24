@@ -1,0 +1,36 @@
+﻿@model myshop.Models.LoaiSp
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h4 style="text-align:center; font-weight:700">Thay đổi thông tin danh mục</h4>
+<hr />
+<div class="row" style="align-content:center; margin-left: 100px">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaLoaiSp" />
+            <div class="form-group">
+                <label asp-for="TenLoaiSp" class="control-label">Tên danh mục sản phẩm</label>
+                <input asp-for="TenLoaiSp" class="form-control" />
+                <span asp-validation-for="TenLoaiSp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,239 @@
+﻿@using X.PagedList;
+@using myshop.Models;
+@model IPagedList<TaiKhoan>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var dsLoaiSp = (List<LoaiTk>)ViewBag.ListLoaiSp;
+}
+
+<h3 style="text-align:center; font-weight:700">DANH SÁCH TÀI KHOẢN</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Thêm mới
+    </a>
+</p>
+<table class="table table-bordered">
+    <thead style="text-align: center;color: #fff;background-color: #007BFF;border-color: #007BFF;">
+        <tr>
+            <th>
+                Tên đăng nhập
+            </th>
+            <th>
+                Tên người dùng
+            </th>
+            <th>
+                Loại tài khoản
+            </th>
+
+            <th>
+                Chức năng
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenDn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenKh)
+                </td>
+                <td>
+                    @if (item.MaLoaiTk == 3)
+                    {
+                        <text>admin</text>
+                    }
+                    else if (item.MaLoaiTk == 4)
+                    {
+                        <text>user</text>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.MaLoaiTk)
+                    }
+                </td>
+                <td>
+
+                    <a class="btn btn-success" asp-action="Details" asp-route-id="@item.MaTk">Chi tiết</a>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.MaTk">Sửa</a>
+                    <a href="@Url.Action("Delete", "TaiKhoans", new { @maTK = item.MaTk })" class="btn btn-danger" onclick="return confirm('Bạn có muốn xóa tài khoản không?')">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Thanh phân trang -->
+<div class="col-sm-12 " style="display:flex;justify-content: space-between;">
+    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "TaiKhoans", new { tk = ViewBag.tk, page = Model.PageNumber - 1 })"><i class="fa fa-angle-left"></i></a>
+                </li>
+
+            }
+
+            <li class="page-item @(1 == ViewBag.Page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", "TaiKhoans", new { tk = ViewBag.tk, page = 1 })">1</a>
+            </li>
+
+            @if (Model.PageNumber > 3)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+            {
+                if (i > 1 && i < Model.PageCount)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "TaiKhoans", new { tk = ViewBag.tk, page = i })">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.PageNumber < Model.PageCount - 2)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageCount == ViewBag.Page ? "active" : "") ">
+                    <a class="page-link" href="@Url.Action("Index", "TaiKhoans", new { tk = ViewBag.tk, page = Model.PageCount })">@Model.PageCount</a>
+                </li>
+            }
+
+            @if (Model.HasNextPage)
+            {
+
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "TaiKhoans", new { tk = ViewBag.tk, page = Model.PageNumber + 1 })"><i class="fa fa-angle-right"></i></a>
+                </li>
+            }
+        </ul>
+    </div>
+    <p>Danh sách từ @ViewBag.PageStartItem đến @ViewBag.PageEndItem trên tổng số @ViewBag.TotalItemCount tài khoản</p>
+</div>
+<!-- Modal create -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thêm tài khoản</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="wrapper">
+                        <form asp-action="Create" method="post">
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="TenDn" class="control-label">Tên đăng nhập:</label>
+                                            <input type="text" class="form-control" placeholder="Nhập tên đăng nhập" name="TenDn" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="MatKhau" class="control-label">Mật khẩu:</label>
+                                            <input type="text" class="form-control" placeholder="Nhập mật khẩu" name="MatKhau" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="LoaiSp" class="control-label">Loại tài khoản:</label>
+                                <select class="form-control" name="LoaiSp" required>
+                                    <option style="display:none" value=""></option>
+                                    @if (dsLoaiSp != null)
+                                    {
+                                        @foreach (var item in dsLoaiSp)
+                                        {
+                                            <option value="@item.TenLoaiTk">@item.TenLoaiTk</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="TenKh" class="control-label">Tên người dùng:</label>
+                                            <input type="text" class="form-control" placeholder="Nhập tên người dùng" name="TenKh" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="Sdt" class="control-label">SĐT:</label>
+                                            <input type="text" class="form-control" placeholder="Nhập số điện thoại" name="Sdt" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="Diachi" class="control-label">Địa chỉ:</label>
+                                            <input type="text" class="form-control" placeholder="Nhập địa chỉ" name="Diachi" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                <input type="submit" value="Thêm" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Open modal create -->
+<!-- Open modal create -->
+<script>
+    jQuery(document).ready(function ($) {
+        // Function to set the active tab
+        function setActiveTab(tabId) {
+            $("ul.nav-tabs li").removeClass("active");
+            $("ul.nav-tabs li a[data-toggle='tab'][href='" + tabId + "']").parent().addClass("active");
+        }
+
+        // Handle tab click
+        $('ul.nav-tabs li a[data-toggle="tab"]').on('click', function (e) {
+            var tabId = $(this).attr("href");
+            setActiveTab(tabId);
+        });
+    });
+</script>

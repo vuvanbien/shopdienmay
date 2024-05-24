@@ -1,0 +1,81 @@
+﻿
+<div class="left-sidebar">
+
+	<form asp-action="Search" asp-controller="Home" method="get">
+		<div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
+			<div class="input-group-append" style="display:flex;margin-bottom: 10px;" >
+				
+				<div class="input-group-append">
+					<button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">
+						Lọc sản phẩm
+					</button>
+					@* <button id="button-addon1" class="btn btn-link text-primary" type="submit" style="color:aliceblue">Lọc sản phẩm</button> *@
+				</div>
+			</div>
+			<h3 class="font-weight-semi-bold mb-4" style="font-weight:700">LOẠI SẢN PHẨM</h3>
+			<div class="panel-group category-products" id="accordian">
+				@await Component.InvokeAsync("LSP")
+
+				<!-- Thêm checkbox cho các tùy chọn khác nếu cần -->
+			</div>
+			<div class="Supplier">
+				<!--Supplier-->
+				<h3 class="font-weight-semi-bold mb-4" style="font-weight:700">THƯƠNG HIỆU</h3>
+				@await Component.InvokeAsync("NSX")
+			</div><!--/Supplier-->
+			
+			<!--Price-->
+			<div class="price-slider-container">
+				<h3 class="font-weight-semi-bold mb-4" style="font-weight:700">GIÁ BÁN</h3>
+				<div class="form-group row">
+					<div class="col-lg-12">
+						<label for="minban" class="col-form-label-lg">TỪ</label>
+						<div class="input-group">
+							<input id="minban" type="number" class="form-control form-control-lg" placeholder="1000000" value="1000000">
+
+							<div class="input-group-append">
+								<button class="btn btn-secondary" type="button" onclick="decreaseValue('minban')"><b>-</b></button>
+								<button class="btn btn-secondary" type="button" onclick="increaseValue('minban')"><b>+</b></button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-lg-12">
+						<label for="maxban" class="col-form-label-lg">ĐẾN</label>
+						<div class="input-group">
+							<input id="maxban" type="number" class="form-control form-control-lg" placeholder="10000000" value="10000000">
+							<div class="input-group-append">
+								<button class="btn btn-secondary" type="button" onclick="decreaseValue('maxban')"><b>-</b></button>
+								<button class="btn btn-secondary" type="button" onclick="increaseValue('maxban')"><b>+</b></button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+
+			<!--Price-->
+		</div>
+	</form>
+	<!-- <div class="shipping text-center">
+
+		<img src="~/Images/hot-sam-do-cho-thu-cung-voi-uu-dai-giam-nua-gia-0.jpeg" style="width:260px"  />
+	</div> -->
+
+</div>
+<script>
+	function increaseValue(id) {
+		var value = parseInt(document.getElementById(id).value, 10);
+		value = isNaN(value) ? 1000000 : value + 1000000;
+		document.getElementById(id).value = value;
+	}
+
+	function decreaseValue(id) {
+		var value = parseInt(document.getElementById(id).value, 10);
+		value = isNaN(value) ? 1000000 : value - 1000000;
+		document.getElementById(id).value = value >= 1000000 ? value : 1000000;
+	}
+</script>
+
+

@@ -1,0 +1,159 @@
+﻿@using X.PagedList;
+@using myshop.Models;
+@model IPagedList<LoaiSp>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h3 style="text-align:center; font-weight:700">DANH MỤC SẢN PHẨM</h3>
+
+<p>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+        <i class="fas fa-plus"></i> Thêm mới
+    </button>
+</p>
+<table class="table table-bordered">
+    <thead style="text-align: center;color: #fff;background-color: #007BFF;border-color: #007BFF;">
+        <tr>
+            <th>
+                Mã loại sản phẩm
+            </th>
+            <th>
+                Loại sản phẩm
+            </th>
+            <th>
+                Chức năng
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaLoaiSp)
+                </td>
+                <td style="text-align:center;font-weight:500">
+                    @Html.DisplayFor(modelItem => item.TenLoaiSp)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaLoaiSp" class="btn btn-warning">Sửa</a>
+                    <a href="@Url.Action("Delete", "LoaiSp", new { @maSP = item.MaLoaiSp })" class="btn btn-danger" onclick="return confirm('Bạn có muốn xóa danh mục sản phẩm không?')">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Thanh phân trang -->
+<div class="col-sm-12 " style="display:flex;justify-content: space-between;">
+    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "LoaiSp", new { lsp = ViewBag.lsp, page = Model.PageNumber - 1 })"><i class="fa fa-angle-left"></i></a>
+                </li>
+
+            }
+
+            <li class="page-item @(1 == ViewBag.Page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", "LoaiSp", new { lsp = ViewBag.lsp, page = 1 })">1</a>
+            </li>
+
+            @if (Model.PageNumber > 3)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+            {
+                if (i > 1 && i < Model.PageCount)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "LoaiSp", new { lsp = ViewBag.lsp, page = i })">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.PageNumber < Model.PageCount - 2)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageCount == ViewBag.Page ? "active" : "") ">
+                    <a class="page-link" href="@Url.Action("Index", "LoaiSp", new { lsp = ViewBag.lsp, page = Model.PageCount })">@Model.PageCount</a>
+                </li>
+            }
+
+            @if (Model.HasNextPage)
+            {
+
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "LoaiSp", new { lsp = ViewBag.lsp, page = Model.PageNumber + 1 })"><i class="fa fa-angle-right"></i></a>
+                </li>
+            }
+        </ul>
+    </div>
+    <p>Danh sách từ @ViewBag.PageStartItem đến @ViewBag.PageEndItem trên tổng số @ViewBag.TotalItemCount loại sản phẩm</p>
+</div>
+<!-- Modal create -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thêm danh mục sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="wrapper">
+                        <form asp-action="Create" method="post">
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="TenLoaiSP" class="control-label">Loại sản phẩm:</label>
+                                            <input type="text" class="form-control" placeholder="Nhập loại sản phẩm" name="TenLoaiSP" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                <input type="submit" value="Thêm" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Open modal create -->
+<!-- Open modal create -->
+<script>
+    jQuery(document).ready(function ($) {
+        // Function to set the active tab
+        function setActiveTab(tabId) {
+            $("ul.nav-tabs li").removeClass("active");
+            $("ul.nav-tabs li a[data-toggle='tab'][href='" + tabId + "']").parent().addClass("active");
+        }
+
+        // Handle tab click
+        $('ul.nav-tabs li a[data-toggle="tab"]').on('click', function (e) {
+            var tabId = $(this).attr("href");
+            setActiveTab(tabId);
+        });
+    });
+</script>

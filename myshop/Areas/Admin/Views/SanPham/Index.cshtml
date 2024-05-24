@@ -1,0 +1,488 @@
+﻿@using myshop.Models.ViewModels
+@model X.PagedList.IPagedList<ProductViewModel>
+@using X.PagedList.Mvc.Core;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var dsLoaiSp = (List<LoaiSp>)ViewBag.ListLoaiSp;
+    var dsNcc = (List<NhaSanXuat>)ViewBag.ListNcc;
+}
+
+<h3 style="text-align:center; font-weight:700">SẢN PHẨM</h3>
+<!-- Tìm kiếm -->
+<form asp-action="Index" method="get" id="formSearch">
+    <div class="col-md-12">
+        <div class="input-group">
+            <div style="margin-left:-6px">
+                <a class="btn btn-primary" id="showPopoverButton" style="margin-right:10px">
+                    Tìm kiếm nâng cao
+                </a>
+            </div>
+
+            <div class="input-group-prepend">
+                <button id="button-addon8" type="submit" class="btn btn-danger"><i class="fa fa-search"></i></button>
+            </div>
+            <input name="searchTen" value="@ViewBag.searchTen" placeholder="Nhập từ bạn cần tìm?" aria-describedby="button-addon8" class="form-control">
+
+            @* <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search" >
+            <div class="input-group-append">
+            <button class="btn btn-navbar" type="submit">
+            <i class="fas fa-search"></i>
+            </button>
+            </div> *@
+
+            <a asp-action="Index" class="btn btn-secondary" style="margin-left:20px"><i class="fa fa-history"></i></a>
+        </div>
+    </div>
+
+    <!-- Tìm kiếm nâng cao -->
+    <div id="popover" class="hidden" style="display: @( ViewBag.lsp != null ||
+                                                                    ViewBag.lsp != null ||
+                                                                    ViewBag.nsx != null ||
+                                                                    ViewBag.minban != 0 ||
+                                                                    ViewBag.maxban != 500000000 ||
+                                                                    ViewBag.minnhap != 0 ||
+                                                                    ViewBag.maxnhap != 500000000 ? "block" : "none")">
+        <div class="input-group">
+            <div style="padding: .25rem 1rem">
+                <label>Danh mục: </label>
+                <select class="form-control" name="lsp">
+                    <option style="display:none" value=""></option>
+                    @if (dsLoaiSp != null)
+                    {
+                        @foreach (var item in dsLoaiSp)
+                        {
+                            @if (ViewBag.lsp == item.TenLoaiSp)
+                            {
+                                <option value="@item.TenLoaiSp" selected>@item.TenLoaiSp</option>
+                            }
+                            else
+                            {
+                                <option value="@item.TenLoaiSp">@item.TenLoaiSp</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <div style="padding: .25rem 1rem">
+                <label>Nhà cung cấp: </label>
+                <select class="form-control" name="ncc">
+                    <option style="display:none" value=""></option>
+                    @if (dsNcc != null)
+                    {
+                        @foreach (var item in dsNcc)
+                        {
+                            @if (ViewBag.ncc == item.TenNsx)
+                            {
+                                <option value="@item.TenNsx" selected>@item.TenNsx</option>
+                            }
+                            else
+                            {
+                                <option value="@item.TenNsx">@item.TenNsx</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="input-group">
+                <div class="slider" style="padding: .25rem 1rem">
+                    <label>Khoảng giá nhập: </label>
+                    <div id="price-range1"></div>
+                    <div></div>
+                    <div id="price-values1">
+                        <input name="minnhap" readonly style="width:95px" id="min-price1" type="text" value="@ViewBag.minnhap.ToString("N0")">
+                        <input name="maxnhap" readonly style="width:95px" id="max-price1" type="text" value="@(ViewBag.maxnhap != 0 ? ViewBag.maxnhap.ToString("N0") : "500,000,000")">
+                    </div>
+                </div>
+
+                <div class="slider" style="padding: .25rem 1rem">
+                    <label>Khoảng giá bán: </label>
+                    <div id="price-range2"></div>
+                    <div></div>
+                    <div id="price-values2">
+                        <input name="minban" readonly style="width:95px" id="min-price2" type="text" value="@ViewBag.minban.ToString("N0")">
+                        <input name="maxban" readonly style="width:95px" id="max-price2" type="text" value="@(ViewBag.maxban != 0 ? ViewBag.maxban.ToString("N0") : "500,000,000")">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    <i class="fas fa-plus"></i> Thêm mới
+</button>
+<table class="table table-bordered">
+    <thead style="text-align: center;color: #fff;background-color: #007BFF;border-color: #007BFF;">
+        <tr>
+            <th>
+                Tên sản phẩm
+            </th>
+            <th>
+                Ảnh
+            </th>
+            <th>
+                Giá bán(VND)
+            </th>
+
+            <th>
+                Số lượng
+            </th>
+
+            <th>
+                Loại sản phẩm
+            </th>
+            <th>
+                Nhà sản xuất
+            </th>
+            <th> Chức năng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenSp)
+                </td>
+                <td>
+                    <p><img src="@Url.Content("~/Images/" + item.Anh)" alt="@item.TenSp" width="100" height="100" /></p>
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.###}", item.GiaBan)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoLuong)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenLoaiSp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenNsx)
+                </td>
+                <td>
+                    <a class="btn btn-success" asp-action="Details" asp-route-id="@item.MaSp">Chi tiết</a>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.MaSp">Sửa</a>
+                    <a href="@Url.Action("Delete", "SanPham", new { @MaSp = item.MaSp })" class="btn btn-danger" onclick="return confirm('Bạn có muốn xóa sản phẩm không?')">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Thanh phân trang -->
+<div class="col-sm-12 " style="display: flex; justify-content: space-between;">
+    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "SanPham", new { searchTen = ViewBag.searchTen, lsp = ViewBag.lsp, nsx = ViewBag.nsx, minban = ViewBag.minban, maxban = ViewBag.maxban, minnhap = ViewBag.minnhap, maxnhap = ViewBag.maxnhap, page = Model.PageNumber - 1 })"><i class="fa fa-angle-left"></i></a>
+                </li>
+
+            }
+
+            <li class="page-item @(1 == ViewBag.Page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", "SanPham", new { searchTen = ViewBag.searchTen, lsp = ViewBag.lsp, nsx = ViewBag.nsx, minban = ViewBag.minban, maxban = ViewBag.maxban, minnhap = ViewBag.minnhap, maxnhap = ViewBag.maxnhap, page = 1 })">1</a>
+            </li>
+
+            @if (Model.PageNumber > 3)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+            {
+                if (i > 1 && i < Model.PageCount)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "SanPham", new { searchTen = ViewBag.searchTen, lsp = ViewBag.lsp, nsx = ViewBag.nsx, minban = ViewBag.minban, maxban = ViewBag.maxban, minnhap = ViewBag.minnhap, maxnhap = ViewBag.maxnhap, page = i })">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.PageNumber < Model.PageCount - 2)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageCount == ViewBag.Page ? "active" : "") ">
+                    <a class="page-link" href="@Url.Action("Index", "SanPham", new { searchTen = ViewBag.searchTen, lsp = ViewBag.lsp, nsx = ViewBag.nsx,  minban = ViewBag.minban, maxban = ViewBag.maxban, minnhap = ViewBag.minnhap, maxnhap = ViewBag.maxnhap, page = Model.PageCount })">@Model.PageCount</a>
+                </li>
+            }
+
+            @if (Model.HasNextPage)
+            {
+
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "SanPham", new { searchTen = ViewBag.searchTen, lsp = ViewBag.lsp, nsx = ViewBag.nsx, minban = ViewBag.minban, maxban = ViewBag.maxban, minnhap = ViewBag.minnhap, maxnhap = ViewBag.maxnhap, page = Model.PageNumber + 1 })"><i class="fa fa-angle-right"></i></a>
+                </li>
+            }
+        </ul>
+    </div>
+    <p>Danh sách từ @ViewBag.PageStartItem đến @ViewBag.PageEndItem trên tổng số @ViewBag.TotalItemCount sản phẩm</p>
+</div>
+<!-- Modal create -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle" style="text-align:center; font-weight:700">Thêm sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="wrapper">
+                        <form asp-action="Create" method="post" enctype="multipart/form-data">
+                            <div class="card card-primary card-tabs">
+                                <div class="card-header p-0 pt-1">
+                                    <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">Sản phẩm</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Mô tả</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Ảnh</a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content" id="custom-tabs-one-tabContent">
+                                        <div class="tab-pane fade" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label for="TenSp" class="control-label">Tên sản phẩm:</label>
+                                                        <input type="text" class="form-control" id="TenSp" placeholder="Nhập tên sản phẩm" name="TenSp" required>
+                                                        <div class="valid-feedback">Valid.</div>
+                                                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="GiaBan" class="control-label">Giá bán:</label>
+                                                        <input type="number" class="form-control" placeholder="Nhập giá bán" name="GiaBan" min="1" required>
+                                                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="GiaNhap" class="control-label">Giá nhập:</label>
+                                                        <input type="number" class="form-control" placeholder="Nhập giá nhập" name="GiaNhap" min="1" required>
+                                                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="GiaKm" class="control-label">Giá khuyến mại:</label>
+                                                        <input type="number" class="form-control" placeholder="Nhập giá khuyến mại" name="GiaKm" min="1" required>
+                                                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="SoLuong" class="control-label">Số lượng:</label>
+                                                        <input type="number" class="form-control" placeholder="Nhập số lượng" name="SoLuong" required>
+                                                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+
+                                                    <div class="form-group">
+                                                        <label for="LoaiSp" class="control-label">Danh mục:</label>
+                                                        <select class="form-control" name="LoaiSp" required>
+                                                            <option style="display:none" value=""></option>
+                                                            @if (dsLoaiSp != null)
+                                                            {
+                                                                @foreach (var item in dsLoaiSp)
+                                                                {
+                                                                    <option value="@item.TenLoaiSp">@item.TenLoaiSp</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Ncc" class="control-label">Nhà cung cấp:</label>
+                                                        <select class="form-control" name="Ncc" required>
+                                                            <option style="display:none" value=""></option>
+                                                            @if (dsNcc != null)
+                                                            {
+                                                                @foreach (var item in dsNcc)
+                                                                {
+                                                                    <option value="@item.TenNsx">@item.TenNsx</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+                                            <div class="form-group">
+                                                <label for="Mota" class="control-label">Mô tả sản phẩm:</label>
+                                                <textarea class="form-control" id="Mota" placeholder="Nhập mô tả sản phẩm" name="Mota" required></textarea>
+                                                <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                                            <div class="form-group">
+                                                <label for="image1" class="control-label">Ảnh:</label>
+                                                <input type="file" class="form-control" name="image1" id="image1" required>
+                                                <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                                <img id="preview1" class="img-responsive chain" style="width: 20%; display: none" src="#" alt=" ">
+                                                <script>
+                                                    image1.onchange = evt1 => {
+                                                        const [file1] = image1.files;
+                                                        if (file1) {
+                                                            preview1.src = URL.createObjectURL(file1);
+                                                            $("#preview1").show();
+                                                        }
+                                                    };
+                                                </script>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- /.card -->
+                            </div>
+
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                <input type="submit" value="Thêm" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Open modal create -->
+
+<script>
+    jQuery(document).ready(function ($) {
+        // Function to set the active tab
+        function setActiveTab(tabId) {
+            $("ul.nav-tabs li").removeClass("active");
+            $("ul.nav-tabs li a[data-toggle='tab'][href='" + tabId + "']").parent().addClass("active");
+        }
+
+        // Handle tab click
+        $('ul.nav-tabs li a[data-toggle="tab"]').on('click', function (e) {
+            var tabId = $(this).attr("href");
+            setActiveTab(tabId);
+        });
+    });
+</script>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('Mota');
+</script>
+
+<!-- Slider -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script>
+    $(document).ready(function () {
+        const minPriceInput1 = $("#min-price1");
+        const maxPriceInput1 = $("#max-price1");
+        const priceRange1 = $("#price-range1");
+
+        const minPriceInput2 = $("#min-price2");
+        const maxPriceInput2 = $("#max-price2");
+        const priceRange2 = $("#price-range2");
+
+        // Initialize the price range slider
+        priceRange1.slider({
+            range: true,
+            min: 0,
+            max: 500000000,
+            values: [@ViewBag.minnhap, @ViewBag.maxnhap],
+            slide: function (event, ui) {
+                minPriceInput1.val(ui.values[0].toLocaleString('en-US'));
+                maxPriceInput1.val(ui.values[1].toLocaleString('en-US'));
+            }
+        });
+
+        // Initialize the price range slider
+        priceRange2.slider({
+            range: true,
+            min: 0,
+            max: 500000000,
+            values: [@ViewBag.minban, @ViewBag.maxban],
+            slide: function (event, ui) {
+                minPriceInput2.val(ui.values[0].toLocaleString('en-US'));
+                maxPriceInput2.val(ui.values[1].toLocaleString('en-US'));
+            }
+        });
+    });
+</script>
+
+<!-- Chuyển giá từ string thành decimal trước khi submit-->
+<script>
+    document.getElementById('formSearch').addEventListener('submit', function () {
+        var minbanInput1 = document.getElementById('min-price1');
+        var maxbanInput1 = document.getElementById('max-price1');
+        var minbanInput2 = document.getElementById('min-price2');
+        var maxbanInput2 = document.getElementById('max-price2');
+
+        // Chuyển giá trị thành số decimal
+        var minbanValue1 = parseFloat(minbanInput1.value.replace(/,/g, ''));
+        var maxbanValue1 = parseFloat(maxbanInput1.value.replace(/,/g, ''));
+        var minbanValue2 = parseFloat(minbanInput2.value.replace(/,/g, ''));
+        var maxbanValue2 = parseFloat(maxbanInput2.value.replace(/,/g, ''));
+
+        // Cập nhật giá trị trong các input
+        minbanInput1.value = minbanValue1;
+        maxbanInput1.value = maxbanValue1;
+        minbanInput2.value = minbanValue2;
+        maxbanInput2.value = maxbanValue2;
+    });
+</script>
+
+<!-- Avanced search -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const showPopoverButton = document.getElementById("showPopoverButton");
+        const popover = document.getElementById("popover");
+        const inputField = document.getElementById("textInput");
+
+        // Hiển thị popover khi nút được nhấn
+        showPopoverButton.addEventListener("click", function (event) {
+            event.stopPropagation(); // Ngăn chặn sự kiện click từ việc khu vực này lan ra bên ngoài
+
+            if (popover.style.display === "block") {
+                popover.style.display = "none";
+            } else {
+                popover.style.display = "block";
+            }
+        });
+
+        // Đóng popover khi click ra ngoài
+        document.addEventListener("click", function (event) {
+            if (popover.style.display === "block" && event.target !== showPopoverButton) {
+                popover.style.display = "none";
+            }
+        });
+
+        // Ngăn chặn sự kiện click trong popover từ tắt popover
+        popover.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        // Ngăn chặn sự kiện click trong <input> từ tắt popover
+        inputField.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+    });
+</script>

@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Http
+@using myshop.Models.ViewModels;
+@model CartItemViewModel;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Checkout Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5">
+        <div class="col-lg-8">
+            <form asp-action="Checkout" asp-controller="CheckOut" method="post">
+                <div class="mb-4">
+                    <h4 class="font-weight-semi-bold mb-4" style="text-align:center;color:deeppink">Thông tin người nhận</h4>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label>Tên người nhận</label>
+                            <input class="form-control" type="text" name="TenKh" placeholder="@Context.Session.GetString("TenKh")">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Số điện thoại</label>
+                            <input class="form-control" type="text" name="Sdt" placeholder="@Context.Session.GetString("Sdt")">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Địa chỉ</label>
+                            <input class="form-control" type="text" name="Diachi" placeholder="@Context.Session.GetString("Diachi")">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Chú ý</label>
+                            <textarea class="form-control" name="Note"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0" style="font-weight:700">Thanh toán</h4>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div>
+                            <button type="submit" class="btn btn-warning" style="width:50%">Thanh toán khi nhận hàng(COD)</button>
+                        </div>
+                        <div>
+                            <a asp-action="PaypalCheckout" asp-controller="CheckOut" asp-area=""><img src="~/Images/pp.png" width="auto" height="100"/></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+           
+           
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-secondary mb-5">
+                <div class="card-header bg-secondary border-0">
+                    <h4 class="font-weight-semi-bold m-0" style="font-weight: 700">Thông tin đơn hàng</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="font-weight-medium mb-3">Sản phẩm</h5>
+                    @if (Model != null && Model.CartItems != null)
+                    {
+                        @if (@Model.CartItems.Count() > 0)
+                        {
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="d-flex justify-content-between">
+                                    <p>@item.TenSp</p>
+                                    @if (item.GiaKm != null)
+                                    {
+                                        <p>@string.Format("{0:#,##0.###}", item.GiaKm) đ</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,##0.###}", item.GiaBan) đ</p>
+
+                                    }
+                                </div>
+                            }
+                        }
+                    }
+                    <hr class="mt-0">
+
+
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5 class="font-weight-bold">Tổng</h5>
+                        @if(Model != null)
+                        {
+                            <h5 class="font-weight-bold">@string.Format("{0:#,##0.###}", Model.GrandTotal) đ</h5>
+                        }
+                       
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<!-- Checkout End -->

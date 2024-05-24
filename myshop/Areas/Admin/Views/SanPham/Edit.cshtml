@@ -1,0 +1,171 @@
+﻿@model myshop.Models.SanPham
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var dsLoaiSp = (List<LoaiSp>)ViewBag.ListLoaiSp;
+    var dsNcc = (List<NhaSanXuat>)ViewBag.ListNcc;
+}
+
+<div class="content-wrapper">
+    <div class="container" style="margin-right: 150px">
+        <div class="row row--top-40">
+            <div class="col-md-12">
+                <h2 class="row__title" style="font-weight:700">Thay đổi thông tin sản phẩm</h2>
+            </div>
+        </div>
+
+        <div class="row row--top-20">
+            <div class="col-md-12">
+                <div class="tabs-wrapper">
+                    <ul id="scroller" class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home">Sản phẩm</a></li>
+                        <li><a data-toggle="tab" href="#menu1">Mô tả</a></li>
+                        <li><a data-toggle="tab" href="#menu2">Ảnh</a></li>
+
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <form method="post" asp-action="Edit" asp-controller="SanPham" enctype="multipart/form-data" id="form-validate">
+                        @Html.HiddenFor(model => model.MaSp)
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane fade active show">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="TenSp" class="control-label">Tên sản phẩm:</label>
+                                            <input type="text" class="form-control" value="@Model.TenSp" name="TenSp" required>
+                                            <div class="valid-feedback">Valid.</div>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="GiaBan" class="control-label">Giá bán:</label>
+                                            <input type="number" class="form-control" value="@Model.GiaBan" name="GiaBan" min="1" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="GiaNhap" class="control-label">Giá nhập:</label>
+                                            <input type="number" class="form-control" value="@Model.GiaNhap" name="GiaNhap" min="1" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="GiaKm" class="control-label">Giá khuyến mại:</label>
+                                            <input type="number" class="form-control" value="@Model.GiaKm" name="GiaKm" min="1" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="SoLuong" class="control-label">Số lượng:</label>
+                                            <input type="number" class="form-control" value="@Model.SoLuong" name="SoLuong" required>
+                                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+
+                                        <div class="form-group">
+                                            <label for="LoaiSanPhamId" class="control-label">Danh mục:</label>
+                                            <select class="form-control" name="LoaiSanPhamId" required>
+                                                @if (dsLoaiSp != null)
+                                                {
+                                                    @foreach (var item in dsLoaiSp)
+                                                    {
+                                                        @if (Model.MaLoaiSp == item.MaLoaiSp)
+                                                        {
+                                                            <option value="@item.MaLoaiSp" selected>@item.TenLoaiSp</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.MaLoaiSp">@item.TenLoaiSp</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="NhaCungCapId" class="control-label">Nhà cung cấp:</label>
+                                            <select class="form-control" name="NhaCungCapId" required>
+                                                @if (dsNcc != null)
+                                                {
+                                                    @foreach (var item in dsNcc)
+                                                    {
+                                                        @if (Model.MaNsx == item.MaNsx)
+                                                        {
+                                                            <option value="@item.MaNsx" selected>@item.TenNsx</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.MaNsx">@item.TenNsx</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="menu1" class="tab-pane fade">
+                                <div class="form-group">
+                                    <label for="MoTa" class="control-label">Mô tả sản phẩm:</label>
+                                    <textarea class="form-control" id="MoTa" name="MoTa">@Model.Mota</textarea>
+                                    <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                </div>
+                            </div>
+                            <div id="menu2" class="tab-pane fade">
+                                <div class="form-group">
+                                    <label class="control-label">Ảnh:</label>
+                                    <input type="file" class="form-control" name="image1" id="image1" />
+                                    <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                                    <input type="text" name="Anh" value="@Model.Anh" style="display:none " />
+                                    <img class="img-responsive chain" style="width:20%" src="~/Images/@Model.Anh" alt=" ">
+                                    <img id="preview1" class="img-responsive chain" style="width: 20%;display: none" src="#" alt=" ">
+                                    <script>
+                                        image1.onchange = evt1 => {
+
+                                            const [file1] = image1.files
+                                            const imgToHide = document.querySelector(".img-responsive.chain");
+
+                                            if (file1) {
+                                                preview1.src = URL.createObjectURL(file1);
+                                                $("#preview1").show();
+
+                                                imgToHide.style.display = "none";
+                                            } else {
+                                                imgToHide.style.display = "block";
+                                            }
+                                        }
+
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                            <button type="submit" class="btn btn-primary" style="letter-spacing: 1px;">
+                                Lưu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function ($) {
+        // Function to set the active tab
+        function setActiveTab(tabId) {
+            $("ul.nav-tabs li").removeClass("active");
+            $("ul.nav-tabs li a[data-toggle='tab'][href='" + tabId + "']").parent().addClass("active");
+        }
+
+        // Handle tab click
+        $('ul.nav-tabs li a[data-toggle="tab"]').on('click', function (e) {
+            var tabId = $(this).attr("href");
+            setActiveTab(tabId);
+        });
+    });
+</script>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('MoTa');
+</script>

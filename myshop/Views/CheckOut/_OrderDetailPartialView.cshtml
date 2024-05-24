@@ -1,0 +1,69 @@
+﻿@using myshop.Models
+@model List<ChiTietHd>
+@{
+    decimal? totalPrice = 0;
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title cart_total_price" id="exampleModalLongTitle">Chi tiết hóa đơn</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container" style="width: 100%">
+            <div class="wrapper">
+                <table  style="width: 100%";>
+                    <thead  >
+                        <tr class="cart_menu">
+                            <th class=" text-center">Mã sản phẩm</th>
+                            <th class=" text-center">Tên sản phẩm</th>
+                            <th class=" text-center">Ảnh</th>
+                            <th class=" text-center">Số lượng mua</th>
+                            <th class=" text-center">Đơn giá</th>
+                            <th class=" text-center">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var items in Model)
+                        {
+                            <tr class="table-row table-row--chris">
+                                <td class="cart_description text-center">
+                                    <p>@items.SanPham.MaSp</p>
+                                </td>
+                                <td class="cart_description text-center">
+                                    <p>@items.SanPham.TenSp</p>
+                                </td>
+                                <td class="cart_description text-center">
+                                    <p><img src="@Url.Content("~/Images/" + items.SanPham.Anh)" alt="@items.SanPham.Anh" width="100" height="100" /></p>
+                                </td>
+                                <td class="cart_description text-center">
+                                    <p>@items.SoLuong</p>
+                                </td>
+                                
+                                <td class="cart_description text-center">
+                                    <p>@string.Format("{0:#,##0.###}", items.Price) đ</p>
+                                </td>
+                                <td class="cart_description text-center">
+                                    <p>@string.Format("{0:#,##0.###}", items.Price*items.SoLuong) đ</p>
+                                </td>
+                            </tr>
+                            totalPrice += @items.Price * items.SoLuong;
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="cart_total_price"> Tổng tiền (đ)</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="cart_total_price"><strong></strong>@string.Format("{0:#,##0.###}", totalPrice)  đ</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
